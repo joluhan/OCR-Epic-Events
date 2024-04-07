@@ -53,3 +53,14 @@ def is_management_team(view_func):
             raise CommandError("You do not have permission to perform this action.") # Raise a CommandError
         return view_func(request, *args, **kwargs) # Return the view function
     return _wrapped_view # Return the wrapped view
+
+# Function to ensure the user is part of the sales team
+def is_sales_team(view_func):
+    # Permissions to ensure that the employee is part of the sales team
+    @wraps(view_func) # Wraps the view function
+    def _wrapped_view(request, *args, **kwargs): # Definition of _wrapped_view function
+        user_role = get_user_role_from_token() # Get the user role from the token
+        if user_role != "sales": # If the user role is not sales
+            raise CommandError("You do not have permission to perform this action.") # Raise a CommandError
+        return view_func(request, *args, **kwargs) # Return the view function
+    return _wrapped_view # Return the wrapped view
