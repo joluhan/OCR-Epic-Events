@@ -72,3 +72,21 @@ class Contract(models.Model):
     # Human-readable representation of the Contract object
     def __str__(self): 
         return f"Contract {self.id} - {self.client}" # Return the contract ID and client name
+
+# Definition of Event model to store events related to contracts
+class Event(models.Model):
+    # Link to a Contract model instance, cascading delete
+    contract = models.ForeignKey(Contract, on_delete=models.CASCADE) 
+    # Additional fields for the Event model
+    name = models.CharField(max_length=255) # Name of the event
+    start_date = models.DateField(null=False) # Start date of the event
+    end_date = models.DateField(null=False) # End date of the event
+    # Link to a User model instance, deletion protected
+    support_staff = models.ForeignKey(User, on_delete=models.PROTECT) # Link to a User model instance
+    location = models.CharField(max_length=255) # Location of the event
+    attendees = models.IntegerField() # Number of attendees
+    notes = models.TextField() # Additional notes for the event
+
+    # Human-readable representation of the Event object
+    def __str__(self):
+        return f"Event {self.id} - {self.name}" # Return the event ID and name
