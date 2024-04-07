@@ -39,3 +39,36 @@ class Client(models.Model):
     # Human-readable representation of the Client object
     def __str__(self):
         return self.fullname # Return the full name of the client
+    
+# Definition of Contract model to store contracts associated with clients and users
+class Contract(models.Model):
+    # Status choices defined for the Contract model
+    STATUS_CHOICES = [
+        ('waiting for signature', 'Waiting for signature'),
+        ('signed', 'Signed'),
+        ('in progress', 'In progress'),
+        ('finished', 'Finished'),
+        ('terminated', 'Terminated'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    # Link to a Client model instance, cascading delete
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    # Link to a User model instance, nullable, optional, cascading delete
+    sales_rep = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    # Additional fields for the Contract model
+    total_amount = models.FloatField(null=False) # Total amount of the contract
+    amount_remaining = models.FloatField(null=False) # Amount remaining to be paid
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default="waiting for signature") # Status of the contract
+    created_at = models.DateField(auto_now_add=True) # Automatically set when a new contract is created
+    updated_at = models.DateField(auto_now=True) # Automatically updated whenever a contract is saved
+
+    # Custom save method to assign sales_rep from client if not set
+    def save(self, *args, **kwargs): # Custom save method to assign sales_rep from client if not set
+        if not self.sales_rep: # If sales_rep is not set
+            self.sales_rep = self.client.sales_rep # Assign sales_rep from client
+        super().save(*args, **kwargs) # Call the save method of the parent class
+
+    # Human-readable representation of the Contract object
+    def __str__(self): 
+        return f"Contract {self.id} - {self.client}" # Return the contract ID and client name
