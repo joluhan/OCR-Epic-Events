@@ -112,3 +112,24 @@ def is_contract_sales_rep_or_is_management_team(view_func):
         return view_func(request, *args, **kwargs) # Return the view function
 
     return _wrapped_view # Return the wrapped view
+
+def require_sales_event_access(views_func):
+    # Permission which ensures that the sales person is indeed linked to the customer of the contract
+    @wraps(views_func) # Wraps the view function
+    def _wrapped_view(request, *args, **kwargs): # Definition of _wrapped_view function
+        # check user role
+        user_role = get_user_role_from_token() 
+        if user_role != "sales": # If the user role is not sales
+            raise CommandError("You do not have permission to perform this action.") # Raise a CommandError
+        # Checks if the user is associated with the event client
+        user_id = get_user_id_from_token() # Get the user id from the token
+        contract_id = kwargs.get('contract_id') # Get the contract id from the arguments
+
+        try:
+            contract = Contract.objects.get(id=contract_id, sales_rep=user_id) # Get the contract from the contract id
+        except Contract.DoesNotExist: # Except block
+            raise CommandError("Access denied. You are not the sales person assigned to this event.") # Raise a CommandError
+
+        return views_func(request, *args, **kwargs) # Return the view function
+
+    return _wrapped_view # Return the wrapped view
