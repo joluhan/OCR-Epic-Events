@@ -43,3 +43,13 @@ def get_user_id_from_token():
     except (FileNotFoundError, json.JSONDecodeError, KeyError): # Except block
         return '' # Return an empty string
 
+# Function to ensure the user is part of the management team
+def is_management_team(view_func): 
+    # Permissions which ensure that the employee is part of the management team
+    @wraps(view_func) # Wraps the view function
+    def _wrapped_view(request, *args, **kwargs): # Definition of _wrapped_view function
+        user_role = get_user_role_from_token() # Get the user role from the token
+        if user_role != "management": # If the user role is not management
+            raise CommandError("You do not have permission to perform this action.") # Raise a CommandError
+        return view_func(request, *args, **kwargs) # Return the view function
+    return _wrapped_view # Return the wrapped view
