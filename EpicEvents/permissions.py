@@ -22,3 +22,24 @@ def require_login(command_func): # Definition of require_login function
         return command_func(*args, **kwargs) # Return the command function
 
     return wrapper # Return the wrapper function
+
+# Function to ensure the user is part of the management team
+def get_user_role_from_token(): # Definition of get_user_role_from_token function
+    # get role of the logged in user from .token
+    try: # Try block
+        with open('.token', 'r') as token_file: # Open the .token file
+            data = json.load(token_file) # Load the data from the token file
+            return data.get('user_role', '') # Return the user role
+    except (FileNotFoundError, json.JSONDecodeError, KeyError): # Except block
+        return '' # Return an empty string
+
+# Function to get the user id from the token
+def get_user_id_from_token():
+    # get id of the logged in user from .token
+    try: # Try block
+        with open('.token', 'r') as token_file: # Open the .token file
+            data = json.load(token_file) # Load the data from the token file
+            return data.get('user_id', '') # Return the user id
+    except (FileNotFoundError, json.JSONDecodeError, KeyError): # Except block
+        return '' # Return an empty string
+
