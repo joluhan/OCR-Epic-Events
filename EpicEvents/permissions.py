@@ -64,3 +64,27 @@ def is_sales_team(view_func):
             raise CommandError("You do not have permission to perform this action.") # Raise a CommandError
         return view_func(request, *args, **kwargs) # Return the view function
     return _wrapped_view # Return the wrapped view
+
+# Function to ensure the user is part of the support team
+def is_sales_team_and_client_rep(view_func):
+    # Permissions to ensure that the employee is part of the sales team and is associated with the client
+    @wraps(view_func) # Wraps the view function
+    def _wrapped_view(request, *args, **kwargs): # Definition of _wrapped_view function
+        # check user role from token
+        user_role = get_user_role_from_token() # Get the user role from the token
+        if user_role != "sales": # If the user role is not sales
+            raise CommandError("You do not have permission to perform this action.") # Raise a CommandError
+
+        # check if user is associated with the client
+        user_id = get_user_id_from_token() # Get the user id from the token
+        client_id = kwargs.get('client_id') # Get the client id from the arguments
+
+        try: # Try block
+            client = Client.objects.get(id=client_id, sales_rep=user_id) # Get the client from the client id
+        except Client.DoesNotExist: # Except block
+            raise CommandError("Access denied. You are not the Sales Representative assigned to this client.") # Raise a CommandError
+
+        return view_func(request, *args, **kwargs) # Return the view function
+
+    return _wrapped_view # Return the wrapped view
+
