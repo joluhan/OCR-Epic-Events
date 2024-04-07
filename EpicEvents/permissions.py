@@ -88,3 +88,27 @@ def is_sales_team_and_client_rep(view_func):
 
     return _wrapped_view # Return the wrapped view
 
+def is_contract_sales_rep_or_is_management_team(view_func):
+    # Permission that ensures the user is the sales rep for the contract or a member of the management team
+    @wraps(view_func) # Wraps the view function
+    def _wrapped_view(request, *args, **kwargs): # Definition of _wrapped_view function
+        # check user role
+        user_role = get_user_role_from_token() # Get the user role from the token
+        user_id = get_user_id_from_token() # Get the user id from the token
+
+        if user_role == "sales": # If the user role is sales
+            # check if user is the sales rep to the contract client
+            contract_id = kwargs['contract_id'] # Get the contract id from the arguments
+
+            try:
+                contract = Contract.objects.get(id=contract_id, sales_rep=user_id) # Get the contract from the contract id
+            except Contract.DoesNotExist: # Except block
+                raise CommandError("Access denied. You are not the sales person assigned to this contract.") # Raise a CommandError
+        elif user_role == "management": # If the user role is management
+            pass # grant access if the user is part of the management team
+        else:
+            raise CommandError("You do not have permission to perform this action.") # Raise a CommandError
+
+        return view_func(request, *args, **kwargs) # Return the view function
+
+    return _wrapped_view # Return the wrapped view
