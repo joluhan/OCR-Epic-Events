@@ -21,3 +21,21 @@ class User(AbstractUser):
     # Human-readable representation of the User object
     def __str__(self):
         return self.username # Return the username of the user
+
+# Definition of Client model to store client information
+class Client(models.Model):
+    # Link to a User model instance, nullable, cascading delete
+    sales_rep = models.ForeignKey(User, on_delete=models.CASCADE, null=True) # Link to a User model instance
+    # Additional fields for the Client model
+    fullname = models.CharField(max_length=255)
+    email = models.EmailField(unique=True)
+    phone = models.CharField(max_length=12)
+    company_name = models.CharField(max_length=255)
+    # Automatically set when a new client is created
+    created_at = models.DateTimeField(auto_now_add=True)
+    # Automatically updated whenever a client is saved
+    updated_at = models.DateField(auto_now=True)
+
+    # Human-readable representation of the Client object
+    def __str__(self):
+        return self.fullname # Return the full name of the client
