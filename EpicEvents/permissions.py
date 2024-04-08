@@ -133,3 +133,27 @@ def require_sales_event_access(views_func):
         return views_func(request, *args, **kwargs) # Return the view function
 
     return _wrapped_view # Return the wrapped view
+
+def is_event_support_or_is_management_team(view_func):
+    # Permission that ensures the user is support staff for the event or a member of the management team
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs): # Definition of _wrapped_view function
+        user_role = get_user_role_from_token() # Get the user role from the token
+
+        if user_role == "support": # If the user role is support
+            user_id = get_user_id_from_token() # Get the user id from the token
+            event_id = kwargs['event_id'] # Get the event id from the arguments
+
+            try:
+                event = Event.objects.get(id=event_id, support_staff=user_id) # Get the event from the event id
+            except Event.DoesNotExist: # Except block
+                raise CommandError("Access denied. You are not the Support staff assigned to this event.") # Raise a CommandError
+
+        elif user_role == "management": # If the user role is management
+            pass # grant access if the user is part of the management team
+        else:
+            raise CommandError("You do not have permission to perform this action.") # Raise a CommandError
+
+        return view_func(request, *args, **kwargs) # Return the view function
+
+    return _wrapped_view # Return the wrapped view
