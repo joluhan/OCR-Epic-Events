@@ -19,7 +19,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     # The app
-    'epicevents',
+    'EpicEvents',
 ]
 
 # Middleware is a framework of hooks into Django's request/response processing.
@@ -71,7 +71,7 @@ DATABASES = {
 }
 
 # Custom user model definition for authentication.
-AUTH_USER_MODEL = 'epicevents.User'
+AUTH_USER_MODEL = 'EpicEvents.User'
 
 # Password validation configuration.
 AUTH_PASSWORD_VALIDATORS = [
