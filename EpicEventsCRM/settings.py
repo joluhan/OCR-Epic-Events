@@ -1,10 +1,16 @@
 from pathlib import Path  # Import Path class for filesystem paths
+import secrets
+
+
+
 
 # Define the base directory of Django project.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security settings for the Django project.
 SECRET_KEY = 'django-insecure-b90yg3twbpc7=gug4q0_!810_gilx_ymi2v1ro(i^pz03bc)yx'  # Secret key for cryptographic signing
+token_key = secrets.token_urlsafe(50)
+TOKEN_KEY = token_key # Token Key for JWT encoding/decoding
 DEBUG = True  # Run in debug mode (not for production)
 ALLOWED_HOSTS = []  # Host/domain names that this Django site can serve
 
