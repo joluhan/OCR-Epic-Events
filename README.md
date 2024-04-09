@@ -9,8 +9,7 @@ company.
 
 
 ## Installation
-To begin, clone the rpository by running the following command in your terminal
-Install my-project with npm
+To begin, clone the repository by running the following command in your terminal
 
 ```bash
   git clone https://github.com/hire-blac/EpicEventsCRM.git
