@@ -20,7 +20,8 @@ Navigate into the project directory, create a virtual environment and activate i
   python -m venv .venv
   source .venv/bin/activate   #Linux/MacOS
 
-  \env\Scripts\activate.bat  #Windows
+  Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+  .\env\Scripts\activate or \env\Scripts\activate.bat  #Windows
 ```
 Install project dependencies and packages
 ```bash
