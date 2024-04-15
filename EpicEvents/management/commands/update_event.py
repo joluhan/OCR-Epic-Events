@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from EpicEvents.models import Event, User
 from datetime import datetime
-from EpicEvents.permissions import require_login, is_event_support_staff_or_is_management_team
+from EpicEvents.permissions import require_login, is_event_support_or_is_management_team
 
 
 class Command(BaseCommand):
@@ -18,7 +18,7 @@ class Command(BaseCommand):
         parser.add_argument('--support_staff_id', type=int, help='ID of new support_staff', required=False)
 
     @require_login
-    @is_event_support_staff_or_is_management_team
+    @is_event_support_or_is_management_team
     def handle(self, *args, **kwargs):
         event_id = kwargs['event_id']
         name = kwargs['name']

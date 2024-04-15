@@ -14,16 +14,18 @@ class Command(BaseCommand):
         fullname = input("User's full name: ")
         username = input("User's username: ")
         role = input("Users role (sales, support or management): ")
-        password = getpass.getpass('password')
+        password = getpass.getpass('password: ')
         role = role.lower()
 
         # verify that the role is a valid choice
         valid_roles = [r[0] for r in User.ROLE_CHOICES] # get the valid roles
         if role not in valid_roles:
-            self.stdout.write(self.style.ERROR(f"The role '{role}' is invalid. Use one of the following : {', '.join(valid_roles)}")) # print error message
+            # print error message
+            self.stdout.write(self.style.ERROR(f"The role '{role}' is invalid. Use one of the following : {', '.join(valid_roles)}"))
             return
 
-        self.stdout.write(self.style.SUCCESS(f"Inputs: {fullname}, {role}, {username}")) # print the inputs
+        # print the inputs
+        self.stdout.write(self.style.SUCCESS(f"Inputs: {fullname}, {role}, {username}"))
 
         user = User.objects.create_user(
                 username=username, 
@@ -32,4 +34,5 @@ class Command(BaseCommand):
                 role=role
             )
         
-        self.stdout.write(self.style.SUCCESS(f"User created successfully: {user}")) # print success message
+        # print success message
+        self.stdout.write(self.style.SUCCESS(f"User created successfully: {user}"))

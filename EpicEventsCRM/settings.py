@@ -1,22 +1,31 @@
-from pathlib import Path  # Import Path class for filesystem paths
-import secrets
+from pathlib import Path # Import Path class for filesystem paths
+import sentry_sdk
 
+sentry_sdk.init(
+    dsn="https://examplePublicKey@o0.ingest.sentry.io/0",
+    enable_tracing=True,
+)
 
-
-
-# Define the base directory of Django project.
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
+
 # Security settings for the Django project.
-SECRET_KEY = 'django-insecure-b90yg3twbpc7=gug4q0_!810_gilx_ymi2v1ro(i^pz03bc)yx'  # Secret key for cryptographic signing
-token_key = secrets.token_urlsafe(50)
-TOKEN_KEY = token_key # Token Key for JWT encoding/decoding
-DEBUG = True  # Run in debug mode (not for production)
-ALLOWED_HOSTS = []  # Host/domain names that this Django site can serve
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'django-insecure-^5=!)ys)_p^p!gab&uxmlpjy87zi@u1*tk+(21hz4h+hkzncwe'
+TOKEN_KEY = 'mnbjhzdiuy8jd83h4632jne7hyh^t%TGin937uhiuY*&Y*&8628j7y7h363^RF^T&R^yuu'
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True # Run in debug mode (not for production)
+
+ALLOWED_HOSTS = [] # Host/domain names that this Django site can serve
+
 
 # Definition of Django applications that are activated in the project.
 INSTALLED_APPS = [
-    # Default Django apps for the admin interface, authentication, etc.
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,9 +55,8 @@ ROOT_URLCONF = 'EpicEventsCRM.urls'
 # Django template configuration.
 TEMPLATES = [
     {
-        # Backend to render templates.
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
         # List of directories to search for templates.
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
         # Whether to look for templates inside installed applications.
         'APP_DIRS': True,
@@ -68,18 +76,24 @@ TEMPLATES = [
 # WSGI application path for Django's deployment.
 WSGI_APPLICATION = 'EpicEventsCRM.wsgi.application'
 
+
 # Database configuration.
+# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',  # Database engine (SQLite in this case)
-        'NAME': BASE_DIR / 'db.sqlite3',  # Database file path
+        'ENGINE': 'django.db.backends.sqlite3', # Database engine (SQLite in this case)
+        'NAME': BASE_DIR / 'db.sqlite3', # Database file path
     }
 }
+
 
 # Custom user model definition for authentication.
 AUTH_USER_MODEL = 'EpicEvents.User'
 
 # Password validation configuration.
+# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
+
 AUTH_PASSWORD_VALIDATORS = [
     # Validators to ensure user passwords meet certain criteria.
     {
@@ -96,14 +110,25 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 # Internationalization and localization settings.
-LANGUAGE_CODE = 'en-us'  # Default language code
-TIME_ZONE = 'UTC'  # Default time zone
-USE_I18N = True  # Enable Django's translation system
-USE_TZ = True  # Enable timezone awareness
+# https://docs.djangoproject.com/en/5.0/topics/i18n/
+
+LANGUAGE_CODE = 'en-us'
+
+TIME_ZONE = 'UTC' # Default time zone
+
+USE_I18N = True # Enable Django's translation system
+
+USE_TZ = True # Enable timezone awareness
+
 
 # Static files configuration (CSS, JavaScript, Images).
-STATIC_URL = 'static/'  # URL to use when referring to static files
+# https://docs.djangoproject.com/en/5.0/howto/static-files/
+
+STATIC_URL = 'static/'
 
 # Default auto field type for models (primary keys).
+# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

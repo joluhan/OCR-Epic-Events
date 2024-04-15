@@ -22,6 +22,8 @@ class Command(BaseCommand):
         # check if the contract exists
         try:
             contract = Contract.objects.get(pk=contract_id)
+            if contract.status != 'signed':
+                raise CommandError(f"The Status of the Contract with ID {contract_id} is {contract.status}.\nTo create an event for this contract it must have a status of 'signed' by the client.")
         except Contract.DoesNotExist:
             raise CommandError(f"The Contract with ID {contract_id} does not exist.")
 

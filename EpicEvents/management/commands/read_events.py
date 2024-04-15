@@ -1,7 +1,7 @@
-from django.core.management.base import BaseCommand
-from EpicEvents.models import Event
+from django.core.management.base import BaseCommand, CommandError
+from EpicEvents.models import Event, User
 from tabulate import tabulate
-from EpicEvents.permissions import require_login
+from EpicEvents.permissions import get_user_id_from_token, require_login
 
 
 class Command(BaseCommand):
@@ -35,7 +35,18 @@ class Command(BaseCommand):
             except Event.DoesNotExist:
                 self.stdout.write(self.style.ERROR(f"No event found with ID {event_id}."))
         else:
-            events = Event.objects.all()
+            user_id = get_user_id_from_token()
+            # Checking if the logged in user is a support_staff
+            try:
+                support_staff = User.objects.get(pk=user_id)
+                if support_staff.role == 'support':
+                    events = Event.objects.filter(support_staff=user_id)
+                else:
+                    events = Event.objects.all()
+
+            except User.DoesNotExist:
+                raise CommandError(f"User with id {user_id} does not exist or is not in role 'support'.")
+
 
             if contract_filter:
                 events = events.filter(contract__id=contract_filter)
