@@ -1,4 +1,6 @@
 from django.core.management.base import BaseCommand
+from django.core.management import call_command
+# from pytz import timezone
 from EpicEvents.auth_utils import generate_token
 from datetime import datetime, timedelta, timezone
 from django.contrib.auth import authenticate
@@ -22,5 +24,6 @@ class Command(BaseCommand):
             token = generate_token(user, expiration_time)
 
             self.stdout.write(self.style.SUCCESS(f'Login successful! Hello : {user.fullname}'))
+            call_command('execute', user.role)
         else:
             self.stdout.write(self.style.ERROR('Authentication failed'))

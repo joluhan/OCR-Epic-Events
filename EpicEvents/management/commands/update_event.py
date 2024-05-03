@@ -31,38 +31,38 @@ class Command(BaseCommand):
 
         try:
             event = Event.objects.get(pk=event_id)
-        except event.DoesNotExist:
+        except Event.DoesNotExist:
             self.stdout.write(self.style.ERROR(f"Event with ID {event_id} does not exist."))
             return
 
-        if name:
+        if name and name != '':
             event.name = name
 
-        if start_date:
+        if start_date and start_date != '':
             # convert date to datetime objet
             event.start_date = datetime.strptime(start_date, '%Y%m%d')
 
-        if end_date:
+        if end_date and end_date != '':
             # convert date to datetime objet
             event.end_date = datetime.strptime(end_date, '%Y%m%d')
 
-        if location:
+        if location and location != '':
             event.location = location
 
-        if num_of_participants is not None:
+        if num_of_participants != None and num_of_participants != '':
             event.attendees = num_of_participants
 
-        if notes:
+        if notes and  notes != '':
             event.notes = notes
 
-        if support_staff_id is not None:
+        if support_staff_id != None and support_staff_id != '':
             try:
                 support_staff = User.objects.get(pk=support_staff_id, role='support')
                 event.support_staff = support_staff
             except User.DoesNotExist:
-                self.stdout.write(self.style.ERROR("user with the specified ID does not exist or is not a support team member."))
+                self.stdout.write(self.style.ERROR("user with the specified ID does not exist or != a support team member."))
                 return
 
         event.save()
 
-        self.stdout.write(self.style.SUCCESS(f"Évent with ID {event_id} modified sucessfully."))
+        self.stdout.write(self.style.SUCCESS(f"Event with ID {event_id} modified sucessfully."))

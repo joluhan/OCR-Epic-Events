@@ -19,7 +19,7 @@ class Command(BaseCommand):
         contract_id = kwargs['contract_id']
         total_amount = kwargs['total_amount']
         amount_remaining = kwargs['amount_remaining']
-        status = kwargs['status']
+        status = kwargs['status'].lower()
         sales_rep_id = kwargs['sales_rep_id']
 
         try:
@@ -28,21 +28,21 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR(f"Contract with ID {contract_id} does not exist."))
             return
 
-        if sales_rep_id is not None:
+        if sales_rep_id != None and sales_rep_id != '':
             try:
                 sales_rep = User.objects.get(pk=sales_rep_id, role='sales')
                 contract.sales_rep = sales_rep
             except User.DoesNotExist:
-                self.stdout.write(self.style.ERROR("The user with the specified ID does not exist or is not a member of sales team."))
+                self.stdout.write(self.style.ERROR("The user with the specified ID does not exist or != a member of sales team."))
                 return
 
-        if total_amount is not None:
+        if total_amount != None and total_amount != '':
             contract.total_amount = total_amount
 
-        if amount_remaining is not None:
+        if amount_remaining != None and amount_remaining != '':
             contract.amount_remaining = amount_remaining
 
-        if status is not None:
+        if status != None and status != '':
             valid_status = [choice[0] for choice in Contract.STATUS_CHOICES]
             if status not in valid_status:
                 self.stdout.write(self.style.ERROR(f"Status '{status}' is invalid. Use any of the following: {', '.join(valid_status)}"))
@@ -52,3 +52,4 @@ class Command(BaseCommand):
         contract.save()
 
         self.stdout.write(self.style.SUCCESS(f"contract with ID {contract_id} modified susseccfully."))
+
