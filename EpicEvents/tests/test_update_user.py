@@ -1,6 +1,6 @@
 from django.core.management import call_command
 from django.core.management.base import CommandError
-from epicevents.models import User
+from EpicEvents.models import User
 from unittest.mock import patch, Mock
 from datetime import datetime, timedelta, timezone
 import pytest
@@ -25,9 +25,9 @@ def test_update_user_successful(mocker, capsys):
 
     with patch('builtins.input', side_effect=custom_input):
 
-        mocker.patch('epicevents.permissions.get_user_role_from_token', return_value='management')
-        mocker.patch('epicevents.permissions.load_token', return_value=('test_token', datetime.now(timezone.utc) + timedelta(days=1)))
-        mocker.patch('epicevents.permissions.validate_token', return_value=user)
+        mocker.patch('EpicEvents.permissions.get_user_role_from_token', return_value='management')
+        mocker.patch('EpicEvents.permissions.load_token', return_value=('test_token', datetime.now(timezone.utc) + timedelta(days=1)))
+        mocker.patch('EpicEvents.permissions.validate_token', return_value=user)
 
     call_command('update_user', int(user.id), '--fullname', 'New Name')
 
@@ -53,9 +53,9 @@ def test_update_user_permission_failure(mocker, capsys):
     # Using patch to simulate user input
     with patch('builtins.input', side_effect=custom_input):
         
-        mocker.patch('epicevents.permissions.get_user_role_from_token', return_value='sales')
-        mocker.patch('epicevents.permissions.load_token', return_value=('test_token', datetime.now(timezone.utc) + timedelta(days=1)))
-        mocker.patch('epicevents.permissions.validate_token', return_value=user)
+        mocker.patch('EpicEvents.permissions.get_user_role_from_token', return_value='sales')
+        mocker.patch('EpicEvents.permissions.load_token', return_value=('test_token', datetime.now(timezone.utc) + timedelta(days=1)))
+        mocker.patch('EpicEvents.permissions.validate_token', return_value=user)
 
         with patch('sys.stderr', new_callable=Mock) as mock_stderr:
             try:
@@ -83,9 +83,9 @@ def test_update_user_not_found(mocker, capsys):
     # Using patch to simulate user input
     with patch('builtins.input', side_effect=custom_input):
         
-        mocker.patch('epicevents.permissions.get_user_role_from_token', return_value='management')
-        mocker.patch('epicevents.permissions.load_token', return_value=('test_token', datetime.now(timezone.utc) + timedelta(days=1)))
-        mocker.patch('epicevents.permissions.validate_token', return_value=user)
+        mocker.patch('EpicEvents.permissions.get_user_role_from_token', return_value='management')
+        mocker.patch('EpicEvents.permissions.load_token', return_value=('test_token', datetime.now(timezone.utc) + timedelta(days=1)))
+        mocker.patch('EpicEvents.permissions.validate_token', return_value=user)
 
         with patch('sys.stderr', new_callable=Mock) as mock_stderr:
             # Attempting to update a user that does not exist
@@ -112,7 +112,7 @@ def test_update_user_not_authenticated(mocker, capsys):
     # Using patch to simulate user input
     with patch('builtins.input', side_effect=custom_input):
         
-        mocker.patch('epicevents.permissions.load_token', return_value=(None, None))
+        mocker.patch('EpicEvents.permissions.load_token', return_value=(None, None))
 
         with patch('sys.stderr', new_callable=Mock) as mock_stderr:
             try:

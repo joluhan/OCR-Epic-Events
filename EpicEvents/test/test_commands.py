@@ -2,7 +2,7 @@ from django.core.management.base import CommandError
 from django.test import TestCase
 from unittest.mock import patch, MagicMock
 from django.contrib.auth import get_user_model
-from epicevents.management.commands.create_client import Command
+from EpicEvents.management.commands.create_client import Command
 from io import StringIO
 
 User = get_user_model()
@@ -22,7 +22,7 @@ class CreateClientCommandTest(TestCase):
         }
         self.out = StringIO()
 
-    @patch('epicevents.management.commands.create_client.get_user_id_from_token')
+    @patch('EpicEvents.management.commands.create_client.get_user_id_from_token')
     def test_get_user_id_from_token(self, mock_get_user_id_from_token):
         mock_get_user_id_from_token.return_value = self.admin_user.id
         self.assertEqual(self.admin_user.id, mock_get_user_id_from_token())

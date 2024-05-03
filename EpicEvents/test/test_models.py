@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from epicevents.models import Client, Contract, Event
+from EpicEvents.models import Client, Contract, Event
 
 # Get the custom User model
 User = get_user_model()

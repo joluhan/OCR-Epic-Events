@@ -1,6 +1,6 @@
 from django.core.management import call_command
 from django.core.management.base import CommandError
-from epicevents.models import User, Client, Contract
+from EpicEvents.models import User, Client, Contract
 from unittest.mock import patch, Mock
 from datetime import datetime, timedelta, timezone
 import pytest
@@ -49,13 +49,13 @@ def test_update_contract_successful(mocker, capsys):
     # Using patch to simulate user input
     with patch('builtins.input', side_effect=custom_input):
         # Mock to bypass permission check
-        mocker.patch('epicevents.permissions.get_user_role_from_token', return_value='management')
+        mocker.patch('EpicEvents.permissions.get_user_role_from_token', return_value='management')
 
         # Mock the load_token function to return a valid token
-        mocker.patch('epicevents.permissions.load_token', return_value=('test_token', datetime.now(timezone.utc) + timedelta(days=1)))
+        mocker.patch('EpicEvents.permissions.load_token', return_value=('test_token', datetime.now(timezone.utc) + timedelta(days=1)))
 
         # Mock the validate_token function to return a valid user
-        mocker.patch('epicevents.permissions.validate_token', return_value=user)
+        mocker.patch('EpicEvents.permissions.validate_token', return_value=user)
 
     # Capturing standard output for verification
     call_command('update_contract', int(contract.id), '--status', 'signed')
@@ -104,13 +104,13 @@ def test_update_user_permission_failure(mocker, capsys):
     # Using patch to simulate user input
     with patch('builtins.input', side_effect=custom_input):
         # Mock to bypass permission check
-        mocker.patch('epicevents.permissions.get_user_role_from_token', return_value='support')
+        mocker.patch('EpicEvents.permissions.get_user_role_from_token', return_value='support')
 
         # Mock the load_token function to return a valid token
-        mocker.patch('epicevents.permissions.load_token', return_value=('test_token', datetime.now(timezone.utc) + timedelta(days=1)))
+        mocker.patch('EpicEvents.permissions.load_token', return_value=('test_token', datetime.now(timezone.utc) + timedelta(days=1)))
 
         # Mock the validate_token function to return a valid user
-        mocker.patch('epicevents.permissions.validate_token', return_value=user)
+        mocker.patch('EpicEvents.permissions.validate_token', return_value=user)
 
         # Capturing standard output for verification
         with patch('sys.stderr', new_callable=Mock) as mock_stderr:
@@ -156,13 +156,13 @@ def test_update_contract_not_found(mocker, capsys):
     # Using patch to simulate user input
     with patch('builtins.input', side_effect=custom_input):
         # Mock to bypass permission check
-        mocker.patch('epicevents.permissions.get_user_role_from_token', return_value='management')
+        mocker.patch('EpicEvents.permissions.get_user_role_from_token', return_value='management')
 
         # Mock the load_token function to return a valid token
-        mocker.patch('epicevents.permissions.load_token', return_value=('test_token', datetime.now(timezone.utc) + timedelta(days=1)))
+        mocker.patch('EpicEvents.permissions.load_token', return_value=('test_token', datetime.now(timezone.utc) + timedelta(days=1)))
 
         # Mock the validate_token function to return a valid user
-        mocker.patch('epicevents.permissions.validate_token', return_value=user)
+        mocker.patch('EpicEvents.permissions.validate_token', return_value=user)
 
         # Capturing standard error output for verification
         with patch('sys.stderr', new_callable=Mock) as mock_stderr:
@@ -204,13 +204,13 @@ def test_update_contract_not_authenticated(mocker, capsys):
     # Using patch to simulate user input
     with patch('builtins.input', side_effect=custom_input):
         # Mock to bypass permission check
-        mocker.patch('epicevents.permissions.get_user_role_from_token', return_value='management')
+        mocker.patch('EpicEvents.permissions.get_user_role_from_token', return_value='management')
 
         # Mock the load_token function to return a valid token
-        mocker.patch('epicevents.permissions.load_token', return_value=('test_token', datetime.now(timezone.utc) + timedelta(days=1)))
+        mocker.patch('EpicEvents.permissions.load_token', return_value=('test_token', datetime.now(timezone.utc) + timedelta(days=1)))
 
         # Mock the validate_token function to return a valid user
-        mocker.patch('epicevents.permissions.validate_token', return_value=(None, None))
+        mocker.patch('EpicEvents.permissions.validate_token', return_value=(None, None))
 
         # Capturing standard output for verification
         with patch('sys.stderr', new_callable=Mock) as mock_stderr:

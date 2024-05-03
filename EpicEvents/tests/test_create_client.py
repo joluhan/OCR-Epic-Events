@@ -1,7 +1,7 @@
 import pytest
 from django.core.management import call_command
-from epicevents.models import User
-from epicevents.management.commands.create_client import Command
+from EpicEvents.models import User
+from EpicEvents.management.commands.create_client import Command
 from unittest.mock import patch, Mock
 from datetime import datetime, timedelta, timezone
 from django.core.management.base import CommandError
@@ -32,14 +32,14 @@ def test_create_client_success(mocker, custom_input):
     with patch('builtins.input', side_effect=custom_input):
 
         # Mock to bypass permission check
-        mocker.patch('epicevents.permissions.get_user_role_from_token', return_value='sales')
-        mocker.patch('epicevents.permissions.get_user_id_from_token', return_value=user.id)
+        mocker.patch('EpicEvents.permissions.get_user_role_from_token', return_value='sales')
+        mocker.patch('EpicEvents.permissions.get_user_id_from_token', return_value=user.id)
 
         # Mock the load_token function to return a valid token
-        mocker.patch('epicevents.permissions.load_token', return_value=('test_token', datetime.now(timezone.utc) + timedelta(days=1)))
+        mocker.patch('EpicEvents.permissions.load_token', return_value=('test_token', datetime.now(timezone.utc) + timedelta(days=1)))
 
         # Mock the validate_token function to return a valid user
-        mocker.patch('epicevents.permissions.validate_token', return_value=user)
+        mocker.patch('EpicEvents.permissions.validate_token', return_value=user)
 
         # Capturing standard output for verification
         with patch('sys.stdout', new_callable=Mock) as mock_stdout:
@@ -72,19 +72,19 @@ def test_create_client_permission_failure(mocker, custom_input):
     mocker.patch('getpass.getpass', return_value='testpassword')
 
     # Mock user creation in database
-    mocker.patch('epicevents.models.User.objects.create_user', return_value=user)
+    mocker.patch('EpicEvents.models.User.objects.create_user', return_value=user)
 
     # Using patch to simulate user input
     with patch('builtins.input', side_effect=custom_input):
         # Mock to bypass permission check
-        mocker.patch('epicevents.permissions.get_user_role_from_token', return_value='management')
+        mocker.patch('EpicEvents.permissions.get_user_role_from_token', return_value='management')
 
         # Mock the load_token function to return a valid token
-        mocker.patch('epicevents.permissions.load_token', return_value=('test_token', datetime.now(timezone.utc) + timedelta(days=1)))
+        mocker.patch('EpicEvents.permissions.load_token', return_value=('test_token', datetime.now(timezone.utc) + timedelta(days=1)))
 
         # Mock the validate_token function to return a valid user
-        # mocker.patch('epicevents.auth_utils.validate_token', return_value=User.objects.create_user(username='testuser', role='management'))
-        mocker.patch('epicevents.permissions.validate_token', return_value=user)
+        # mocker.patch('EpicEvents.auth_utils.validate_token', return_value=User.objects.create_user(username='testuser', role='management'))
+        mocker.patch('EpicEvents.permissions.validate_token', return_value=user)
 
         # Capturing standard output for verification
         with patch('sys.stdout', new_callable=Mock) as mock_stdout:
@@ -118,12 +118,12 @@ def test_create_client_not_connected(mocker, custom_input):
     mocker.patch('getpass.getpass', return_value='testpassword')
 
     # Mock user creation in database
-    mocker.patch('epicevents.models.User.objects.create_user', return_value=user)
+    mocker.patch('EpicEvents.models.User.objects.create_user', return_value=user)
 
     # Using patch to simulate user input
     with patch('builtins.input', side_effect=custom_input):
         # Mock load_token function to return None (user not logged in)
-        mocker.patch('epicevents.permissions.load_token', return_value=(None, None))
+        mocker.patch('EpicEvents.permissions.load_token', return_value=(None, None))
 
         # Capturing standard output for verification
         with patch('sys.stdout', new_callable=Mock) as mock_stdout:

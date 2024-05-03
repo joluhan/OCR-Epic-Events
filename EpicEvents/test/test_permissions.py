@@ -1,12 +1,12 @@
 from django.test import TestCase
 from django.core.management.base import CommandError
 from unittest.mock import patch, MagicMock
-from epicevents.permissions import require_login, is_management_team, is_sales_team, is_sales_team_and_client_rep
-from epicevents.permissions import is_contract_sales_rep_or_is_management_team, require_sales_event_access, is_event_support_or_is_management_team
+from EpicEvents.permissions import require_login, is_management_team, is_sales_team, is_sales_team_and_client_rep
+from EpicEvents.permissions import is_contract_sales_rep_or_is_management_team, require_sales_event_access, is_event_support_or_is_management_team
 
 class RequireLoginTestCase(TestCase):
-    @patch('epicevents.permissions.load_token')
-    @patch('epicevents.permissions.validate_token')
+    @patch('EpicEvents.permissions.load_token')
+    @patch('EpicEvents.permissions.validate_token')
     def test_require_login_with_valid_token(self, mock_validate_token, mock_load_token):
         # Arrange
         mock_load_token.return_value = ['valid_token']
@@ -19,8 +19,8 @@ class RequireLoginTestCase(TestCase):
         
         self.assertTrue(dummy_command())
 
-    @patch('epicevents.permissions.load_token')
-    @patch('epicevents.permissions.validate_token')
+    @patch('EpicEvents.permissions.load_token')
+    @patch('EpicEvents.permissions.validate_token')
     def test_require_login_with_no_token(self, mock_validate_token, mock_load_token):
         # Arrange
         mock_load_token.return_value = [None]
@@ -36,8 +36,8 @@ class RequireLoginTestCase(TestCase):
         
         self.assertEqual("User not logged in. Please log in.", str(cm.exception))
 
-    @patch('epicevents.permissions.load_token')
-    @patch('epicevents.permissions.validate_token')
+    @patch('EpicEvents.permissions.load_token')
+    @patch('EpicEvents.permissions.validate_token')
     def test_require_login_with_invalid_token(self, mock_validate_token, mock_load_token):
         # Arrange
         mock_load_token.return_value = ['invalid_token']
@@ -54,7 +54,7 @@ class RequireLoginTestCase(TestCase):
         self.assertEqual("Invalid token. Please log in.", str(cm.exception))
 
 class IsManagementTeamTestCase(TestCase):
-    @patch('epicevents.permissions.get_user_role_from_token')
+    @patch('EpicEvents.permissions.get_user_role_from_token')
     def test_is_management_team_with_correct_role(self, mock_get_user_role_from_token):
         # Arrange
         mock_get_user_role_from_token.return_value = "management"
@@ -67,7 +67,7 @@ class IsManagementTeamTestCase(TestCase):
         
         self.assertTrue(dummy_view(request))
 
-    @patch('epicevents.permissions.get_user_role_from_token')
+    @patch('EpicEvents.permissions.get_user_role_from_token')
     def test_is_management_team_with_incorrect_role(self, mock_get_user_role_from_token):
         # Arrange
         mock_get_user_role_from_token.return_value = "not_management"
@@ -82,7 +82,7 @@ class IsManagementTeamTestCase(TestCase):
             dummy_view(request)
 
 class IsSalesTeamTestCase(TestCase):
-    @patch('epicevents.permissions.get_user_role_from_token')
+    @patch('EpicEvents.permissions.get_user_role_from_token')
     def test_is_sales_team_with_correct_role(self, mock_get_user_role_from_token):
         mock_get_user_role_from_token.return_value = "sales"
         request = MagicMock()
@@ -93,7 +93,7 @@ class IsSalesTeamTestCase(TestCase):
         
         self.assertTrue(dummy_view(request))
 
-    @patch('epicevents.permissions.get_user_role_from_token')
+    @patch('EpicEvents.permissions.get_user_role_from_token')
     def test_is_sales_team_with_incorrect_role(self, mock_get_user_role_from_token):
         mock_get_user_role_from_token.return_value = "not_sales"
         request = MagicMock()
@@ -106,9 +106,9 @@ class IsSalesTeamTestCase(TestCase):
             dummy_view(request)
 
 class IsSalesTeamAndClientRepTestCase(TestCase):
-    @patch('epicevents.permissions.get_user_role_from_token')
-    @patch('epicevents.permissions.get_user_id_from_token')
-    @patch('epicevents.models.Client.objects.get')
+    @patch('EpicEvents.permissions.get_user_role_from_token')
+    @patch('EpicEvents.permissions.get_user_id_from_token')
+    @patch('EpicEvents.models.Client.objects.get')
     def test_is_sales_team_and_client_rep_with_correct_role_and_client(self, mock_client_get, mock_get_user_id_from_token, mock_get_user_role_from_token):
         mock_get_user_role_from_token.return_value = "sales"
         mock_get_user_id_from_token.return_value = 'user_id'
@@ -123,9 +123,9 @@ class IsSalesTeamAndClientRepTestCase(TestCase):
         self.assertTrue(dummy_view(request, **kwargs))
 
 class IsContractSalesRepOrIsManagementTeamTestCase(TestCase):
-    @patch('epicevents.permissions.get_user_role_from_token')
-    @patch('epicevents.permissions.get_user_id_from_token')
-    @patch('epicevents.models.Contract.objects.get')
+    @patch('EpicEvents.permissions.get_user_role_from_token')
+    @patch('EpicEvents.permissions.get_user_id_from_token')
+    @patch('EpicEvents.models.Contract.objects.get')
     def test_with_sales_role_and_correct_contract(self, mock_contract_get, mock_get_user_id_from_token, mock_get_user_role_from_token):
         # Arrange
         mock_get_user_role_from_token.return_value = "sales"
@@ -142,9 +142,9 @@ class IsContractSalesRepOrIsManagementTeamTestCase(TestCase):
         self.assertTrue(dummy_view(request, **kwargs))
 
 class RequireSalesEventAccessTestCase(TestCase):
-    @patch('epicevents.permissions.get_user_role_from_token')
-    @patch('epicevents.permissions.get_user_id_from_token')
-    @patch('epicevents.models.Contract.objects.get')
+    @patch('EpicEvents.permissions.get_user_role_from_token')
+    @patch('EpicEvents.permissions.get_user_id_from_token')
+    @patch('EpicEvents.models.Contract.objects.get')
     def test_with_sales_role_linked_to_contract_customer(self, mock_contract_get, mock_get_user_id_from_token, mock_get_user_role_from_token):
         # Arrange
         mock_get_user_role_from_token.return_value = "sales"
@@ -161,9 +161,9 @@ class RequireSalesEventAccessTestCase(TestCase):
         self.assertTrue(dummy_view(request, **kwargs))
 
 class IsEventSupportOrIsManagementTeamTestCase(TestCase):
-    @patch('epicevents.permissions.get_user_role_from_token')
-    @patch('epicevents.permissions.get_user_id_from_token')
-    @patch('epicevents.models.Event.objects.get')
+    @patch('EpicEvents.permissions.get_user_role_from_token')
+    @patch('EpicEvents.permissions.get_user_id_from_token')
+    @patch('EpicEvents.models.Event.objects.get')
     def test_with_support_role_and_assigned_to_event(self, mock_event_get, mock_get_user_id_from_token, mock_get_user_role_from_token):
         # Arrange
         mock_get_user_role_from_token.return_value = "support"
