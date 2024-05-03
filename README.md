@@ -5,11 +5,9 @@ Customer Relationship Management (CRM) software that organizes events (parties, 
 off-site events) for its clients while facilitating communication between the different divisions of the
 company.
 
-
-
-
 ## Installation
-To begin, clone the repository by running the following command in your terminal
+To begin, clone the rpository by running the following command in your terminal
+Install my-project with npm
 
 ```bash
   git clone https://github.com/hire-blac/EpicEventsCRM.git
@@ -19,13 +17,28 @@ Navigate into the project directory, create a virtual environment and activate i
   python -m venv .venv
   source .venv/bin/activate   #Linux/MacOS
 
-  Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
-  .\env\Scripts\activate or \env\Scripts\activate.bat  #Windows
+  \env\Scripts\activate.bat  #Windows
 ```
 Install project dependencies and packages
 ```bash
   pip install -r requirements.txt
 ```
+
+## Environment Variables
+Generate a secret key that is unique for this deployment of the Django app by runnig this command in your terminal
+```bash
+  python -c 'from django.core.management.utils import  get_random_secret_key; print(get_random_secret_key())'
+```
+Create a file named `.env` in the project's root director. Copy the generated secret key and add to your `.env` file as `SECRET_KEY = <YOUR_GENERATED_KEY>`.
+
+Generate a another random secret key to be used by JWT for user authentication.
+```bash
+  python -c 'from django.core.management.utils import  get_random_secret_key; print(get_random_secret_key())'
+```
+Copy the generated secret key and add to your `.env` file as `TOKEN_KEY = <YOUR_GENERATED_KEY>`.
+
+Finally, add the DSN for Sentry error logging to `.env` file as `SENTRY_DSN = <Sentry DSN>`. You’ll need the DSN (Data Source Name) from your Sentry project, which you can find in your Sentry project settings under "Client Keys (DSN)" after you sign in at https://sentry.io/welcome/.
+
 
 ## Create Superuser
 To create new users, apply migrations to initialize the database by running the following command:
@@ -64,100 +77,77 @@ To login:
 ```bash
   python manage.py login
 ```
-To logout:
+
+
+
+### Coverage
+
+Follow these steps to install Coverage.py and configure it for your Django project:
+
+1. **Install Coverage.py**
+
+   Open your terminal and run the following command to install Coverage.py:
+
+   ```bash
+   pip install coverage
+
+2. **Configure Coverage.py**
+
+   Create a file named `.coveragerc` in your project directory to specify Coverage.py settings:
+
+   ```plaintext
+   [run]
+   source = .
+   omit =
+       */migrations/*
+       manage.py
+   ```
+
+   - `source`: This setting includes all directories under the current directory for coverage reporting.
+   - `omit`: This setting excludes files or directories that you do not want to include in the coverage report, such as migrations and `manage.py`.
+
+## Running the Tests
+
+### Using Django's manage.py
+
+Django's `manage.py` script provides a convenient way to interact with your Django project. To run your tests without coverage, simply execute:
 
 ```bash
-  python manage.py logout
+python manage.py test
 ```
-To create a new user:
+
+### With Coverage
+
+To run your tests with coverage, use the following commands:
 
 ```bash
-  python manage.py create_new_user
-```
-To view all or a single user:
-
-```bash
-  python manage.py read_users <optional: user_id>
-```
-To update a user info:
-
-```bash
-  python manage.py update_user <user_id> --[field name] [new value]
-```
-To delete a user:
-
-```bash
-  python manage.py delete_user <user_id>
+coverage run -m pytest
 ```
 
+This command will start the Django test suite under the coverage monitor.
 
-### Client Commands
+## Generating Coverage Reports
 
-To create a new client:
+After running the tests, you can generate coverage reports in two formats:
 
-```bash
-  python manage.py create_client
-```
-To view all or a single client:
+- **Command-line Report:**
 
-```bash
-  python manage.py read_clients <optional: client_id>
-```
-To update a client info:
+  Generate a simple coverage report in your terminal:
 
-```bash
-  python manage.py update_client <client_id> --[field name] [new value]
-```
-To delete a client:
+  ```bash
+  coverage report
+  ```
 
-```bash
-  python manage.py delete_client <client_id>
-```
+- **HTML Report:**
 
+  Generate a detailed HTML coverage report:
 
-### Contract Commands
+  ```bash
+  coverage html
+  ```
 
-To create a new contract:
+  This command generates an HTML report that you can view in a browser to see a detailed breakdown of coverage by file.
 
-```bash
-  python manage.py create_contract
-```
-To view all or a single contract:
+## Viewing the HTML Report
 
-```bash
-  python manage.py read_contracts <optional: contract_id>
-```
-To update a contract info:
-
-```bash
-  python manage.py update_contract <contract_id> --[field name] [new value]
-```
-To delete a contract:
-
-```bash
-  python manage.py delete_contract <contract_id>
-```
-
-
-### Event Commands
-
-To create a new event:
-
-```bash
-  python manage.py create_event
-```
-To view all or a single event:
-
-```bash
-  python manage.py read_events <optional: event_id>
-```
-To update a event info:
-
-```bash
-  python manage.py update_event <event_id> --[field name] [new value]
-```
-To delete a event:
-
-```bash
-  python manage.py delete_event <event_id>
-```
+After generating the HTML report, you can find it in the `htmlcov` directory at the root of your project. Open the `index.html` file in a web browser to view the coverage report.
