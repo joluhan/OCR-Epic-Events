@@ -1,8 +1,13 @@
-from pathlib import Path # Import Path class for filesystem paths
+import os
+from pathlib import Path
 import sentry_sdk
+from dotenv import load_dotenv
 
+load_dotenv()
+
+dsn = os.getenv('SENTRY_DSN')
 sentry_sdk.init(
-    dsn="https://examplePublicKey@o0.ingest.sentry.io/0",
+    dsn=dsn,
     enable_tracing=True,
 )
 
@@ -13,10 +18,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# Security settings for the Django project.
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^5=!)ys)_p^p!gab&uxmlpjy87zi@u1*tk+(21hz4h+hkzncwe'
-TOKEN_KEY = 'mnbjhzdiuy8jd83h4632jne7hyh^t%TGin937uhiuY*&Y*&8628j7y7h363^RF^T&R^yuu'
+SECRET_KEY = os.getenv('SECRET_KEY')
+TOKEN_KEY = os.getenv('TOKEN_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True # Run in debug mode (not for production)
